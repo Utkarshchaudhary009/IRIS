@@ -33,6 +33,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# clerk.txt
+# Ai doc.txt
+Docs/**
 .env.local.example
-clerk.txt
-Ai doc.txt
