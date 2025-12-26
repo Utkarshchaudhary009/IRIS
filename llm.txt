@@ -1,0 +1,190 @@
+# IRIS AI Agent Webapp
+
+## Overview
+IRIS is a sophisticated AI agent web application built with Next.js, featuring tool-in-loop capabilities, conversation management, and MCP (Model Context Protocol) server integration. The app uses Clerk for authentication and Supabase for data persistence.
+
+## Tech Stack
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **AI**: Vercel AI SDK, Google Generative AI (@google/genai)
+- **Authentication**: Clerk
+- **Database**: Supabase with PostgreSQL
+- **UI Components**: AI Elements (pre-built AI components)
+- **State Management**: React hooks, server actions
+
+## Project Structure
+
+### Core Directories
+```
+/workspaces/IRIS/
+├── app/                          # Next.js app directory
+│   ├── api/chat/                 # Chat API endpoint
+│   ├── ssr/                      # Server-side rendering pages
+│   │   ├── actions.ts            # Server actions for data operations
+│   │   ├── client.tsx            # Supabase client configuration
+│   │   └── page.tsx              # SSR page component
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Root layout
+│   └── page.tsx                  # Home page
+├── components/                   # React components
+│   ├── ai-elements/              # AI-specific UI components
+│   └── ui/                       # Base UI components (shadcn)
+├── lib/                          # Utility libraries
+│   └── utils.ts                  # Utility functions
+├── supabase-schema.sql           # Database schema
+└── package.json                  # Dependencies
+```
+
+### Key Components (AI Elements)
+
+#### Conversation Management
+- **Conversation**: Auto-scrolling container for chat messages
+- **ConversationContent**: Message list wrapper
+- **Message**: Individual message container with role-based styling
+- **MessageContent**: Message content with user/assistant styling
+
+#### Input Components
+- **PromptInput**: Advanced input with file attachments, voice, commands
+- **OpenInChat**: Dropdown to open queries in external AI platforms
+
+#### AI-Specific Components
+- **Tool**: Display tool execution results
+- **Reasoning**: Show AI reasoning process
+- **ChainOfThought**: Visualize step-by-step thinking
+- **CodeBlock**: Syntax-highlighted code with copy functionality
+- **ModelSelector**: Choose AI models
+- **Checkpoint**: Conversation state management
+
+## Database Schema
+
+### Core Tables
+- **conversations**: Chat sessions with metadata
+- **messages**: Individual messages with tool calls
+- **attachments**: Files attached to conversations
+- **mcp_servers**: Model Context Protocol servers
+- **mcp_tools**: Available tools from MCP servers
+- **agent_configs**: Agent configuration presets
+
+### Key Features
+- Row Level Security (RLS) enabled
+- Token usage tracking
+- Message sequencing
+- Tool execution logging
+
+## API Endpoints
+
+### `/api/chat`
+- **Method**: POST
+- **Purpose**: Handle chat requests with streaming responses
+- **Features**: Tool execution, conversation persistence, MCP integration
+
+## Authentication Flow
+1. User signs in via Clerk
+2. JWT token used for Supabase RLS
+3. User data isolated by user_id
+
+## Development Commands
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+## Environment Variables Required
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+CLERK_JWT_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_KEY=
+```
+
+## AI Integration
+
+### Supported Models
+- Google Gemini (via @google/genai)
+- OpenAI GPT models (via Vercel AI SDK)
+- Anthropic Claude (via Vercel AI SDK)
+
+### Tool Execution
+- MCP (Model Context Protocol) servers
+- Tool calling with structured outputs
+- Streaming responses
+- Error handling and retries
+
+## Component Usage Examples
+
+### Basic Chat Interface
+```tsx
+import { Conversation, ConversationContent, Message, MessageContent, PromptInput } from '@/components/ai-elements';
+
+function ChatInterface() {
+  return (
+    <Conversation>
+      <ConversationContent>
+        <Message from="user">
+          <MessageContent>Hello!</MessageContent>
+        </Message>
+        <Message from="assistant">
+          <MessageContent>Hi there!</MessageContent>
+        </Message>
+      </ConversationContent>
+      <PromptInput onSubmit={handleSubmit} />
+    </Conversation>
+  );
+}
+```
+
+### Open in External Chat
+```tsx
+import { OpenIn, OpenInTrigger, OpenInContent, OpenInChatGPT, OpenInClaude } from '@/components/ai-elements';
+
+function ChatActions({ query }) {
+  return (
+    <OpenIn query={query}>
+      <OpenInTrigger />
+      <OpenInContent>
+        <OpenInChatGPT />
+        <OpenInClaude />
+      </OpenInContent>
+    </OpenIn>
+  );
+}
+```
+
+## Best Practices
+
+### Server Actions
+- Use `actions.ts` for all data operations
+- Ensure proper error handling
+- Validate inputs with Zod schemas
+
+### Component Design
+- Use AI Elements for consistent AI UI
+- Follow shadcn/ui design patterns
+- Implement proper loading states
+
+### Database Operations
+- Use Supabase client from `client.tsx`
+- Leverage RLS for security
+- Track token usage for billing
+
+### Performance
+- Implement proper streaming for AI responses
+- Use React Server Components where possible
+- Optimize bundle size with dynamic imports
+
+## Deployment
+- Deploy to Vercel for optimal Next.js support
+- Configure environment variables in Vercel dashboard
+- Set up Supabase project and run schema migrations
+- Configure Clerk application settings
+
+## Contributing
+1. Follow TypeScript strict mode
+2. Use ESLint and Prettier
+3. Write comprehensive tests for server actions
+4. Document new components and APIs
+5. Follow conventional commit messages</content>
+<parameter name="filePath">/workspaces/IRIS/llm.txt
