@@ -1,80 +1,31 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useSession, useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
+'use client';
+
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import AIChat from '@/components/AIChat';
 
 export default function Home() {
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
-  // The `useUser()` hook will be used to ensure that Clerk has loaded data about the logged in user
-  const { user } = useUser();
-  // The `useSession()` hook will be used to get the Clerk session object
-  const { session } = useSession();
-
-  // Create a custom supabase client that injects the Clerk Supabase token into the request headers
-  function createClerkSupabaseClient() {
-    return createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_KEY!,
-      {
-        async accessToken() {
-          return session?.getToken() ?? null;
-        },
-      }
-    );
-  }
-
-  // Create a `client` object for accessing Supabase data using the Clerk token
-  const client = createClerkSupabaseClient();
-
-  // This `useEffect` will wait for the User object to be loaded before requesting
-  // the tasks for the logged in user
-  useEffect(() => {
-    if (!user) return;
-
-    async function loadTasks() {
-      setLoading(true);
-      const { data, error } = await client.from("tasks").select();
-      if (!error) setTasks(data);
-      setLoading(false);
-    }
-
-    loadTasks();
-  }, [user]);
-
-  async function createTask(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    // Insert task into the "tasks" database
-    await client.from("tasks").insert({
-      name,
-    });
-    window.location.reload();
-  }
-
   return (
-    <div>
-      <h1>Tasks</h1>
+    <div className="h-[calc(100vh-104px)]">
+      <SignedOut>
+        <div className="flex items-center justify-center h-full">
+          <div className="glass-panel p-12 text-center max-w-md">
+            <div className="text-6xl mb-6">🤖</div>
+            <h1 className="text-3xl font-bold gradient-text mb-4">Jarvis AI</h1>
+            <p className="text-gray-400 mb-8">
+              Your intelligent AI assistant powered by Gemini. Sign in to start a conversation.
+            </p>
+            <SignInButton mode="modal">
+              <button className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-white font-medium hover:opacity-90 transition-opacity">
+                Sign In to Continue
+              </button>
+            </SignInButton>
+          </div>
+        </div>
+      </SignedOut>
 
-      {loading && <p>Loading...</p>}
-
-      {!loading &&
-        tasks.length > 0 &&
-        tasks.map((task: any) => <p key={task.id}>{task.name}</p>)}
-
-      {!loading && tasks.length === 0 && <p>No tasks found</p>}
-
-      <form onSubmit={createTask}>
-        <input
-          autoFocus
-          type="text"
-          name="name"
-          placeholder="Enter new task"
-          onChange={(e) => setName(e.target.value)}
-          value={name}
-        />
-        <button type="submit">Add</button>
-      </form>
+      <SignedIn>
+        <AIChat />
+      </SignedIn>
     </div>
   );
 }
