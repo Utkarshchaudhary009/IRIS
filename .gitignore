@@ -35,5 +35,5 @@ yarn-error.log*
 next-env.d.ts
 # clerk.txt
 # Ai doc.txt
-Docs/**
+# Docs/**
 .env.local.example
