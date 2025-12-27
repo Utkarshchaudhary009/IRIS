@@ -2,7 +2,6 @@
 
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import AIChat from '@/components/AIChat';
-
 export default function Home() {
   return (
     <div className="h-[calc(100vh-104px)]">
